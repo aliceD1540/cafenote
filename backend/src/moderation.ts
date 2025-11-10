@@ -8,7 +8,9 @@ export interface ModerationResult {
 
 export async function moderateContent(message: string, geminiApiKey?: string, geminiModel: string = "gemini-1.5-flash"): Promise<ModerationResult> {
 	if (!geminiApiKey) {
-		return { allowed: true, level: 1 };
+		// APIキーが設定されていない場合は投稿を拒否
+		console.error("Gemini API key is not configured");
+		return { allowed: false, level: 0, warning: "コンテンツモデレーション機能が利用できません。管理者に連絡してください。" };
 	}
 
 	const prompt = MODERATION_RULES.replace("{TEXT_TO_CHECK}", message);
@@ -41,12 +43,17 @@ export async function moderateContent(message: string, geminiApiKey?: string, ge
 
 		if (!response.ok) {
 			console.error("Gemini API error:", await response.text());
-			return { allowed: true, level: 1 };
+			return { allowed: false, level: 0, warning: "コンテンツモデレーションに失敗しました。しばらくしてから再度お試しください。" };
 		}
 
 		const data = await response.json();
 		const text = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
 		const level = parseInt(text, 10);
+
+		if (!text || isNaN(level)) {
+			console.error("Invalid moderation response:", text);
+			return { allowed: false, level: 0, warning: "コンテンツモデレーションに失敗しました。しばらくしてから再度お試しください。" };
+		}
 
 		if (level === 1) {
 			return { allowed: true, level: 1 };
@@ -56,9 +63,11 @@ export async function moderateContent(message: string, geminiApiKey?: string, ge
 			return { allowed: false, level: 3, warning: "不適切な内容が検出されたため、投稿できません。" };
 		}
 
-		return { allowed: true, level: 1 };
+		// 予期しないレベル値の場合も拒否
+		console.error("Unexpected moderation level:", level);
+		return { allowed: false, level: 0, warning: "コンテンツモデレーションに失敗しました。しばらくしてから再度お試しください。" };
 	} catch (error) {
 		console.error("Moderation error:", error);
-		return { allowed: true, level: 1 };
+		return { allowed: false, level: 0, warning: "コンテンツモデレーションに失敗しました。しばらくしてから再度お試しください。" };
 	}
 }
