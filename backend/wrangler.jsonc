@@ -1,0 +1,36 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "guestbook-backend",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-11-09",
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "guestbook-db",
+			"database_id": "YOUR_DATABASE_ID"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "COMMENT_CACHE",
+			"id": "YOUR_COMMENT_CACHE_KV_ID"
+		},
+		{
+			"binding": "IP_LIMIT",
+			"id": "YOUR_IP_LIMIT_KV_ID"
+		}
+	],
+	"vars": {
+		"GEMINI_API_KEY": ""
+	},
+	"triggers": {
+		"crons": ["*/5 * * * *"]
+	}
+}

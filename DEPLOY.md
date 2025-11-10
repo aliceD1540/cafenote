@@ -1,0 +1,133 @@
+# デプロイ手順
+
+## 前提条件
+
+- Cloudflareアカウントを作成済み
+- wrangler CLIがインストール済み（`npm install -g wrangler`）
+
+## 1. Cloudflareにログイン
+
+```bash
+wrangler login
+```
+
+## 2. D1データベースの作成
+
+```bash
+cd backend
+wrangler d1 create guestbook-db
+```
+
+出力例:
+```
+✅ Successfully created DB 'guestbook-db'
+
+[[d1_databases]]
+binding = "DB"
+database_name = "guestbook-db"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+```
+
+この`database_id`をコピーして、`backend/wrangler.jsonc`の`database_id`を更新してください。
+
+## 3. データベーススキーマの適用
+
+```bash
+wrangler d1 execute guestbook-db --file=./schema.sql
+```
+
+## 4. KVネームスペースの作成
+
+コメントキャッシュ用:
+```bash
+wrangler kv:namespace create "COMMENT_CACHE"
+```
+
+出力例:
+```
+🌀 Creating namespace with title "guestbook-backend-COMMENT_CACHE"
+✨ Success!
+Add the following to your configuration file in your kv_namespaces array:
+{ binding = "COMMENT_CACHE", id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }
+```
+
+IP制限用:
+```bash
+wrangler kv:namespace create "IP_LIMIT"
+```
+
+出力例:
+```
+🌀 Creating namespace with title "guestbook-backend-IP_LIMIT"
+✨ Success!
+Add the following to your configuration file in your kv_namespaces array:
+{ binding = "IP_LIMIT", id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }
+```
+
+それぞれの`id`をコピーして、`backend/wrangler.jsonc`の対応する`id`を更新してください。
+
+## 5. Gemini API Keyの設定（オプションだが推奨）
+
+Google AI Studioで取得したGemini API Keyを設定:
+
+```bash
+wrangler secret put GEMINI_API_KEY
+```
+
+プロンプトが表示されたら、APIキーを入力してEnterを押してください。
+
+**注意**: APIキーを設定しない場合、コンテンツモデレーションはスキップされます。
+
+## 6. デプロイ
+
+```bash
+npm run deploy
+```
+
+## 7. 動作確認
+
+デプロイ後、表示されるWorkerのURLにアクセスして動作確認:
+
+```bash
+# コメント一覧取得
+curl https://guestbook-backend.your-subdomain.workers.dev/test-room
+
+# コメント投稿
+curl -X POST https://guestbook-backend.your-subdomain.workers.dev/test-room \
+  -H "Content-Type: application/json" \
+  -d '{"message":"テストメッセージ"}'
+```
+
+## 8. Cron Triggersの確認
+
+Cloudflare Dashboardから以下を確認:
+1. Workers & Pages > あなたのWorker > Triggers
+2. Cron Triggersが`*/5 * * * *`（5分ごと）に設定されていることを確認
+
+## トラブルシューティング
+
+### D1データベースが見つからない
+
+```bash
+wrangler d1 list
+```
+
+で作成済みデータベースを確認できます。
+
+### KVネームスペースが見つからない
+
+```bash
+wrangler kv:namespace list
+```
+
+で作成済みネームスペースを確認できます。
+
+### ローカルでの開発
+
+```bash
+npm run dev
+```
+
+ローカル開発時は、`http://localhost:8787/`でSwagger UIにアクセスできます。
+
+**注意**: Cron Triggersはローカル環境では動作しません。

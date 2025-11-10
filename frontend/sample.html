@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ゲストノート</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .container {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+      }
+      .qr-section {
+        text-align: center;
+        padding: 20px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .qr-section h2 {
+        font-size: 16px;
+        color: #666;
+        margin-bottom: 10px;
+      }
+      .qr-section img {
+        max-width: 200px;
+        height: auto;
+      }
+      .qr-section .room-url {
+        font-size: 12px;
+        color: #999;
+        margin-top: 10px;
+        word-break: break-all;
+      }
+      #comments {
+        margin-bottom: 20px;
+        padding: 10px;
+        background: #fafafa;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        max-height: 400px;
+        overflow-y: auto;
+        min-height: 200px;
+      }
+      .comment {
+        padding: 12px;
+        background: #fff;
+        border-radius: 4px;
+        margin-bottom: 8px;
+        border-left: 3px solid #4caf50;
+      }
+      .comment:last-child {
+        margin-bottom: 0;
+      }
+      .comment-message {
+        color: #333;
+        word-wrap: break-word;
+      }
+      .comment-time {
+        font-size: 0.85em;
+        color: #999;
+        margin-top: 4px;
+      }
+      .no-comments {
+        text-align: center;
+        color: #999;
+        padding: 40px 20px;
+      }
+      form {
+        margin-top: 20px;
+      }
+      label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #333;
+      }
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+        min-height: 80px;
+      }
+      textarea:focus {
+        outline: none;
+        border-color: #4caf50;
+      }
+      .char-count {
+        text-align: right;
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 4px;
+      }
+      button {
+        margin-top: 10px;
+        padding: 12px 24px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: background-color 0.2s;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .note {
+        font-size: 0.9em;
+        color: #666;
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        padding: 12px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+      }
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 12px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+      }
+      .warning-message {
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 12px;
+        border-radius: 4px;
+        margin-top: 10px;
+        display: none;
+      }
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 id="roomTitle">ゲストノート</h1>
+
+      <div class="qr-section" id="qrSection" style="display: none;">
+        <h2>このページにアクセス</h2>
+        <img id="qrCode" alt="QRコード" />
+        <div class="room-url" id="roomUrl"></div>
+      </div>
+
+      <div id="comments">
+        <div class="loading">読み込み中...</div>
+      </div>
+
+      <form id="commentForm">
+        <label for="message">コメントを残す（最大100文字）:</label>
+        <textarea 
+          id="message" 
+          maxlength="100" 
+          placeholder="例: ありがとう！また来ます！"
+        ></textarea>
+        <div class="char-count">
+          <span id="charCount">0</span> / 100
+        </div>
+        <button type="submit" id="submitBtn">投稿する</button>
+        <div class="note">
+          ※同一IPからの投稿は1分に1回までです<br />
+          ※最新100件のコメントが表示されます
+        </div>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        <div class="warning-message" id="warningMessage"></div>
+      </form>
+    </div>
+
+    <script>
+      const API_URL = 'http://localhost:8787';
+      
+      function getRoomIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('room') || 'AAA';
+      }
+
+      const ROOM_ID = getRoomIdFromUrl();
+      document.getElementById('roomTitle').textContent = `ゲストノート（部屋ID: ${ROOM_ID}）`;
+
+      const currentUrl = window.location.href;
+      const qrSection = document.getElementById('qrSection');
+      const qrCode = document.getElementById('qrCode');
+      const roomUrl = document.getElementById('roomUrl');
+      
+      qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
+      roomUrl.textContent = currentUrl;
+      qrSection.style.display = 'block';
+
+      const messageInput = document.getElementById('message');
+      const charCount = document.getElementById('charCount');
+      const submitBtn = document.getElementById('submitBtn');
+      const errorMessage = document.getElementById('errorMessage');
+      const successMessage = document.getElementById('successMessage');
+      const warningMessage = document.getElementById('warningMessage');
+      const commentsContainer = document.getElementById('comments');
+
+      messageInput.addEventListener('input', function() {
+        charCount.textContent = this.value.length;
+      });
+
+      function formatDate(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diff = now - date;
+        
+        if (diff < 60000) {
+          return 'たった今';
+        } else if (diff < 3600000) {
+          return `${Math.floor(diff / 60000)}分前`;
+        } else if (diff < 86400000) {
+          return `${Math.floor(diff / 3600000)}時間前`;
+        } else {
+          return date.toLocaleDateString('ja-JP', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function renderComments(comments) {
+        if (!comments || comments.length === 0) {
+          commentsContainer.innerHTML = '<div class="no-comments">まだコメントがありません。最初のコメントを投稿しましょう！</div>';
+          return;
+        }
+
+        commentsContainer.innerHTML = comments.map(comment => `
+          <div class="comment">
+            <div class="comment-message">${escapeHtml(comment.message)}</div>
+            <div class="comment-time">${formatDate(comment.created_at)}</div>
+          </div>
+        `).join('');
+      }
+
+      async function loadComments() {
+        try {
+          const response = await fetch(`${API_URL}/${ROOM_ID}`);
+          if (response.ok) {
+            const comments = await response.json();
+            renderComments(comments);
+          } else {
+            commentsContainer.innerHTML = '<div class="no-comments">コメントの読み込みに失敗しました</div>';
+          }
+        } catch (error) {
+          console.error('Error loading comments:', error);
+          commentsContainer.innerHTML = '<div class="no-comments">コメントの読み込みに失敗しました</div>';
+        }
+      }
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+        successMessage.style.display = 'none';
+        warningMessage.style.display = 'none';
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 5000);
+      }
+
+      function showSuccess(message) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        warningMessage.style.display = 'none';
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 3000);
+      }
+
+      function showWarning(message) {
+        warningMessage.textContent = message;
+        warningMessage.style.display = 'block';
+        errorMessage.style.display = 'none';
+        successMessage.style.display = 'none';
+        setTimeout(() => {
+          warningMessage.style.display = 'none';
+        }, 5000);
+      }
+
+      document.getElementById('commentForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const message = messageInput.value.trim();
+        if (message.length === 0) {
+          showError('メッセージを入力してください');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '投稿中...';
+
+        try {
+          const response = await fetch(`${API_URL}/${ROOM_ID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            if (data.warning) {
+              showWarning(data.warning);
+            } else {
+              showSuccess('コメントを投稿しました！');
+            }
+            messageInput.value = '';
+            charCount.textContent = '0';
+            await loadComments();
+          } else {
+            showError(data.error || '投稿に失敗しました');
+          }
+        } catch (error) {
+          console.error('Error posting comment:', error);
+          showError('投稿に失敗しました。もう一度お試しください。');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '投稿する';
+        }
+      });
+
+      loadComments();
+      setInterval(loadComments, 30000);
+    </script>
+  </body>
+</html>
