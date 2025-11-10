@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS comments (
     room_id TEXT NOT NULL,
     message TEXT NOT NULL,
     created_at INTEGER NOT NULL,
-    ip_hash TEXT NOT NULL
+    ip_hash TEXT NOT NULL,
+    is_hidden INTEGER DEFAULT 0
 );
 
 -- Create index for efficient room-based queries

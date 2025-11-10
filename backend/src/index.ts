@@ -39,7 +39,7 @@ async function syncCacheFromDB(env: Env) {
 
 		for (const room of rooms) {
 			const result = await DB.prepare(
-				"SELECT id, message, created_at FROM comments WHERE room_id = ? ORDER BY created_at DESC LIMIT 100"
+				"SELECT id, message, created_at, is_hidden FROM comments WHERE room_id = ? ORDER BY created_at DESC LIMIT 100"
 			)
 				.bind(room.room_id)
 				.all();

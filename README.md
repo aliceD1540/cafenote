@@ -32,6 +32,7 @@ guestbook/
 │   │   ├── index.ts           # メインエントリポイント + Cron処理
 │   │   ├── types.ts           # 型定義
 │   │   ├── moderation.ts      # Gemini APIコンテンツモデレーション
+│   │   ├── moderation-rules.ts # モデレーションルール定義
 │   │   └── endpoints/
 │   │       ├── getComments.ts # コメント取得API
 │   │       └── postComment.ts # コメント投稿API
@@ -43,7 +44,6 @@ guestbook/
 │   └── README.md
 ├── README.md             # このファイル
 ├── DEPLOY.md             # デプロイ手順
-├── rules.md              # Geminiモデレーションルール
 └── main.drawio.svg       # 画面設計図
 ```
 
@@ -144,10 +144,10 @@ D1にコメントを追加する
 Gemini APIを使用した3段階判定:
 
 - **レベル1**: 問題なし → 通常投稿
-- **レベル2**: 軽度の不適切表現 → "***"に置換して投稿
+- **レベル2**: 軽度の不適切表現 → 初期非表示（クリックで表示可能）
 - **レベル3**: 重度の不適切表現・個人情報 → 投稿拒否
 
-詳細は [rules.md](./rules.md) を参照。
+詳細は [backend/src/moderation-rules.ts](./backend/src/moderation-rules.ts) を参照。
 
 ## 画面設計
 

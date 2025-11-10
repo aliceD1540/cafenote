@@ -44,7 +44,7 @@ export class GetComments extends OpenAPIRoute {
 
 		const DB = c.env.DB;
 		const result = await DB.prepare(
-			"SELECT id, message, created_at FROM comments WHERE room_id = ? ORDER BY created_at DESC LIMIT 100"
+			"SELECT id, message, created_at, is_hidden FROM comments WHERE room_id = ? ORDER BY created_at DESC LIMIT 100"
 		)
 			.bind(roomId)
 			.all();

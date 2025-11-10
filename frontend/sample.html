@@ -9,198 +9,198 @@
         box-sizing: border-box;
       }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        background-color: #f9f9f9;
-        padding: 20px;
-        max-width: 800px;
-        margin: 0 auto;
-      }
-      h1 {
-        color: #333;
-        font-size: 24px;
-        margin-bottom: 20px;
+        font-family: "Helvetica", Arial, sans-serif;
+        background-color: #ffffff;
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
       }
       .container {
+        width: 590px;
+        height: 360px;
+        margin: 20px auto;
         background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 20px;
+        border: 1px solid #000;
+        position: relative;
+        padding: 0;
       }
-      .qr-section {
-        text-align: center;
-        padding: 20px;
-        background: #f5f5f5;
-        border-radius: 4px;
-        margin-bottom: 20px;
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        gap: 10px;
+        border-bottom: 1px solid #000;
       }
-      .qr-section h2 {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 10px;
+      .input-wrapper {
+        display: flex;
+        gap: 10px;
+        flex: 1;
       }
-      .qr-section img {
-        max-width: 200px;
-        height: auto;
-      }
-      .qr-section .room-url {
+      #message {
+        width: 140px;
+        height: 20px;
+        padding: 2px 5px;
+        border: 1px solid #000;
         font-size: 12px;
-        color: #999;
-        margin-top: 10px;
-        word-break: break-all;
+        font-family: "Helvetica", Arial, sans-serif;
+        resize: none;
+      }
+      #message:focus {
+        outline: 1px solid #000;
+      }
+      #submitBtn {
+        width: 50px;
+        height: 20px;
+        padding: 0;
+        background-color: #fff;
+        color: #000;
+        border: 1px solid #000;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: "Helvetica", Arial, sans-serif;
+      }
+      #submitBtn:hover {
+        background-color: #f0f0f0;
+      }
+      #submitBtn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      .note-section {
+        font-size: 12px;
+        color: #000;
+        line-height: 1.4;
+        flex: 1;
+      }
+      .qr-wrapper {
+        width: 60px;
+        height: 60px;
+        border: 1px solid #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        padding: 4px;
+      }
+      .qr-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .qr-text {
+        font-size: 10px;
+        text-align: center;
       }
       #comments {
-        margin-bottom: 20px;
-        padding: 10px;
-        background: #fafafa;
-        border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        max-height: 400px;
+        height: 260px;
+        padding: 7px 2px;
+        margin: 0 20px;
+        border: 1px solid #000;
         overflow-y: auto;
-        min-height: 200px;
+        font-size: 12px;
+        line-height: 1.5;
+        background-color: #fff;
       }
       .comment {
-        padding: 12px;
-        background: #fff;
-        border-radius: 4px;
-        margin-bottom: 8px;
-        border-left: 3px solid #4caf50;
+        margin-bottom: 5px;
+        color: #000;
+        background-color: #fff;
       }
-      .comment:last-child {
-        margin-bottom: 0;
+      .comment-text {
+        display: inline;
       }
-      .comment-message {
-        color: #333;
-        word-wrap: break-word;
+      .comment-text.hidden-content {
+        color: #999;
+        cursor: pointer;
+        text-decoration: underline;
+        user-select: none;
+      }
+      .comment-text.hidden-content:hover {
+        color: #666;
       }
       .comment-time {
-        font-size: 0.85em;
-        color: #999;
-        margin-top: 4px;
+        display: inline;
+        color: #666;
       }
       .no-comments {
         text-align: center;
         color: #999;
-        padding: 40px 20px;
-      }
-      form {
-        margin-top: 20px;
-      }
-      label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 8px;
-        color: #333;
-      }
-      textarea {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 14px;
-        font-family: inherit;
-        resize: vertical;
-        min-height: 80px;
-      }
-      textarea:focus {
-        outline: none;
-        border-color: #4caf50;
-      }
-      .char-count {
-        text-align: right;
-        font-size: 0.85em;
-        color: #666;
-        margin-top: 4px;
-      }
-      button {
-        margin-top: 10px;
-        padding: 12px 24px;
-        background-color: #4caf50;
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: 600;
-        transition: background-color 0.2s;
-      }
-      button:hover {
-        background-color: #45a049;
-      }
-      button:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-      .note {
-        font-size: 0.9em;
-        color: #666;
-        margin-top: 8px;
-        line-height: 1.5;
-      }
-      .error-message {
-        background-color: #ffebee;
-        color: #c62828;
-        padding: 12px;
-        border-radius: 4px;
-        margin-top: 10px;
-        display: none;
-      }
-      .success-message {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-        padding: 12px;
-        border-radius: 4px;
-        margin-top: 10px;
-        display: none;
-      }
-      .warning-message {
-        background-color: #fff3cd;
-        color: #856404;
-        padding: 12px;
-        border-radius: 4px;
-        margin-top: 10px;
-        display: none;
+        padding: 20px;
       }
       .loading {
         text-align: center;
         padding: 20px;
         color: #666;
       }
+      .message-overlay {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 2px solid #000;
+        padding: 20px;
+        min-width: 300px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        display: none;
+        text-align: center;
+      }
+      .message-overlay.error {
+        border-color: #c62828;
+        color: #c62828;
+      }
+      .message-overlay.success {
+        border-color: #2e7d32;
+        color: #2e7d32;
+      }
+      .message-overlay.warning {
+        border-color: #856404;
+        color: #856404;
+      }
+      @media (max-width: 610px) {
+        .container {
+          width: 100%;
+          margin: 0;
+          height: auto;
+          min-height: 100vh;
+        }
+        #comments {
+          height: calc(100vh - 150px);
+        }
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1 id="roomTitle">ゲストノート</h1>
-
-      <div class="qr-section" id="qrSection" style="display: none;">
-        <h2>このページにアクセス</h2>
-        <img id="qrCode" alt="QRコード" />
-        <div class="room-url" id="roomUrl"></div>
+      <div class="header">
+        <div class="input-wrapper">
+          <input 
+            type="text"
+            id="message" 
+            maxlength="100" 
+            placeholder="コメント入力"
+          />
+          <button type="button" id="submitBtn">投稿</button>
+        </div>
+        <div class="note-section">
+          投稿は1分に1回までです<br />
+          100件を超えたコメントは古いものから削除されます<br />
+          コメントは5分おきに更新されます
+        </div>
+        <div class="qr-wrapper">
+          <div id="qrDisplay">
+            <img id="qrCode" alt="QR" />
+          </div>
+        </div>
       </div>
 
       <div id="comments">
         <div class="loading">読み込み中...</div>
       </div>
-
-      <form id="commentForm">
-        <label for="message">コメントを残す（最大100文字）:</label>
-        <textarea 
-          id="message" 
-          maxlength="100" 
-          placeholder="例: ありがとう！また来ます！"
-        ></textarea>
-        <div class="char-count">
-          <span id="charCount">0</span> / 100
-        </div>
-        <button type="submit" id="submitBtn">投稿する</button>
-        <div class="note">
-          ※同一IPからの投稿は1分に1回までです<br />
-          ※最新100件のコメントが表示されます
-        </div>
-        <div class="error-message" id="errorMessage"></div>
-        <div class="success-message" id="successMessage"></div>
-        <div class="warning-message" id="warningMessage"></div>
-      </form>
     </div>
+
+    <div class="message-overlay" id="messageOverlay"></div>
 
     <script>
       const API_URL = 'http://localhost:8787';
@@ -211,48 +211,24 @@
       }
 
       const ROOM_ID = getRoomIdFromUrl();
-      document.getElementById('roomTitle').textContent = `ゲストノート（部屋ID: ${ROOM_ID}）`;
-
       const currentUrl = window.location.href;
-      const qrSection = document.getElementById('qrSection');
       const qrCode = document.getElementById('qrCode');
-      const roomUrl = document.getElementById('roomUrl');
       
-      qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
-      roomUrl.textContent = currentUrl;
-      qrSection.style.display = 'block';
+      qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=52x52&data=${encodeURIComponent(currentUrl)}`;
 
       const messageInput = document.getElementById('message');
-      const charCount = document.getElementById('charCount');
       const submitBtn = document.getElementById('submitBtn');
-      const errorMessage = document.getElementById('errorMessage');
-      const successMessage = document.getElementById('successMessage');
-      const warningMessage = document.getElementById('warningMessage');
+      const messageOverlay = document.getElementById('messageOverlay');
       const commentsContainer = document.getElementById('comments');
-
-      messageInput.addEventListener('input', function() {
-        charCount.textContent = this.value.length;
-      });
 
       function formatDate(timestamp) {
         const date = new Date(timestamp);
-        const now = new Date();
-        const diff = now - date;
-        
-        if (diff < 60000) {
-          return 'たった今';
-        } else if (diff < 3600000) {
-          return `${Math.floor(diff / 60000)}分前`;
-        } else if (diff < 86400000) {
-          return `${Math.floor(diff / 3600000)}時間前`;
-        } else {
-          return date.toLocaleDateString('ja-JP', {
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
-        }
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
       }
 
       function escapeHtml(text) {
@@ -263,16 +239,36 @@
 
       function renderComments(comments) {
         if (!comments || comments.length === 0) {
-          commentsContainer.innerHTML = '<div class="no-comments">まだコメントがありません。最初のコメントを投稿しましょう！</div>';
+          commentsContainer.innerHTML = '<div class="no-comments">まだコメントがありません</div>';
           return;
         }
 
-        commentsContainer.innerHTML = comments.map(comment => `
-          <div class="comment">
-            <div class="comment-message">${escapeHtml(comment.message)}</div>
-            <div class="comment-time">${formatDate(comment.created_at)}</div>
-          </div>
-        `).join('');
+        commentsContainer.innerHTML = comments.map((comment, index) => {
+          const isHidden = comment.is_hidden === 1;
+          const displayText = isHidden ? '*** (クリックで表示)' : escapeHtml(comment.message);
+          const textClass = isHidden ? 'comment-text hidden-content' : 'comment-text';
+          const dataAttrs = isHidden ? `data-original-message="${escapeHtml(comment.message)}" data-is-revealed="false"` : '';
+          
+          return `<div class="comment"><span class="${textClass}" ${dataAttrs}>${displayText}</span> - <span class="comment-time">(${formatDate(comment.created_at)})</span></div>`;
+        }).join('');
+
+        // Add click event listeners to hidden content
+        document.querySelectorAll('.comment-text.hidden-content').forEach(element => {
+          element.addEventListener('click', function() {
+            const originalMessage = this.getAttribute('data-original-message');
+            const isRevealed = this.getAttribute('data-is-revealed') === 'true';
+            
+            if (isRevealed) {
+              // Hide it again
+              this.textContent = '*** (クリックで表示)';
+              this.setAttribute('data-is-revealed', 'false');
+            } else {
+              // Reveal the message
+              this.textContent = originalMessage;
+              this.setAttribute('data-is-revealed', 'true');
+            }
+          });
+        });
       }
 
       async function loadComments() {
@@ -290,47 +286,24 @@
         }
       }
 
-      function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        successMessage.style.display = 'none';
-        warningMessage.style.display = 'none';
+      function showMessage(message, type) {
+        messageOverlay.textContent = message;
+        messageOverlay.className = `message-overlay ${type}`;
+        messageOverlay.style.display = 'block';
         setTimeout(() => {
-          errorMessage.style.display = 'none';
-        }, 5000);
-      }
-
-      function showSuccess(message) {
-        successMessage.textContent = message;
-        successMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        warningMessage.style.display = 'none';
-        setTimeout(() => {
-          successMessage.style.display = 'none';
+          messageOverlay.style.display = 'none';
         }, 3000);
       }
 
-      function showWarning(message) {
-        warningMessage.textContent = message;
-        warningMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        successMessage.style.display = 'none';
-        setTimeout(() => {
-          warningMessage.style.display = 'none';
-        }, 5000);
-      }
-
-      document.getElementById('commentForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
+      submitBtn.addEventListener('click', async function() {
         const message = messageInput.value.trim();
         if (message.length === 0) {
-          showError('メッセージを入力してください');
+          showMessage('メッセージを入力してください', 'error');
           return;
         }
 
         submitBtn.disabled = true;
-        submitBtn.textContent = '投稿中...';
+        submitBtn.textContent = '...';
 
         try {
           const response = await fetch(`${API_URL}/${ROOM_ID}`, {
@@ -345,27 +318,33 @@
 
           if (response.ok) {
             if (data.warning) {
-              showWarning(data.warning);
+              showMessage(data.warning, 'warning');
             } else {
-              showSuccess('コメントを投稿しました！');
+              showMessage('投稿しました', 'success');
             }
             messageInput.value = '';
-            charCount.textContent = '0';
             await loadComments();
           } else {
-            showError(data.error || '投稿に失敗しました');
+            showMessage(data.error || '投稿に失敗しました', 'error');
           }
         } catch (error) {
           console.error('Error posting comment:', error);
-          showError('投稿に失敗しました。もう一度お試しください。');
+          showMessage('投稿に失敗しました', 'error');
         } finally {
           submitBtn.disabled = false;
-          submitBtn.textContent = '投稿する';
+          submitBtn.textContent = '投稿';
+        }
+      });
+
+      messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitBtn.click();
         }
       });
 
       loadComments();
-      setInterval(loadComments, 30000);
+      setInterval(loadComments, 300000);
     </script>
   </body>
 </html>

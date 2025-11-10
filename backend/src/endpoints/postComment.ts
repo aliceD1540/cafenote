@@ -80,7 +80,8 @@ export class PostComment extends OpenAPIRoute {
 		}
 
 		const geminiApiKey = c.env.GEMINI_API_KEY;
-		const moderation = await moderateContent(message, geminiApiKey);
+		const geminiModel = c.env.GEMINI_MODEL || "gemini-1.5-flash";
+		const moderation = await moderateContent(message, geminiApiKey, geminiModel);
 
 		if (!moderation.allowed) {
 			return c.json({ error: moderation.warning || "Content not allowed", level: moderation.level }, 403);
@@ -110,19 +111,16 @@ export class PostComment extends OpenAPIRoute {
 
 		const sanitizedMessage = this.sanitizeMessage(message);
 
-		let displayMessage = sanitizedMessage;
-		if (moderation.level === 2) {
-			displayMessage = "***";
-		}
+		const isHidden = moderation.level === 2 ? 1 : 0;
 
 		const id = crypto.randomUUID();
 		const created_at = Date.now();
 
 		const DB = c.env.DB;
 		await DB.prepare(
-			"INSERT INTO comments (id, room_id, message, created_at, ip_hash) VALUES (?, ?, ?, ?, ?)"
+			"INSERT INTO comments (id, room_id, message, created_at, ip_hash, is_hidden) VALUES (?, ?, ?, ?, ?, ?)"
 		)
-			.bind(id, roomId, displayMessage, created_at, ipHash)
+			.bind(id, roomId, sanitizedMessage, created_at, ipHash, isHidden)
 			.run();
 
 		await IP_LIMIT.put(limitKey, created_at.toString(), {
