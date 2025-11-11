@@ -20,14 +20,15 @@
   "kv_namespaces": [
     {
       "binding": "COMMENT_CACHE",
-      "id": "YOUR_COMMENT_CACHE_KV_ID"
+      "id": "bcafd4eedc584c15a5ad16f81426f23b"
     },
     {
       "binding": "IP_LIMIT",
-      "id": "YOUR_IP_LIMIT_KV_ID"
+      "id": "4335da1e46b342abb98b679b7b5fc08b"
     }
   ],
   "vars": {
+    "ENVIRONMENT": "development",
     "GEMINI_API_KEY": "AIzaSyBYjdX-1-Ntj0Wzy25B_NJmO5_R6snrrW4",
     "GEMINI_MODEL": "gemini-2.5-flash-lite"
   },

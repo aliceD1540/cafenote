@@ -66,7 +66,21 @@ Add the following to your configuration file in your kv_namespaces array:
 
 それぞれの`id`をコピーして、`backend/wrangler.jsonc`の対応する`id`を更新してください。
 
-## 5. Gemini API Keyの設定（オプションだが推奨）
+## 5. 環境変数の設定
+
+`backend/wrangler.jsonc`の`vars`セクションで環境を設定:
+
+```jsonc
+"vars": {
+  "ENVIRONMENT": "production",  // 本番環境では "production" に変更
+  "GEMINI_API_KEY": "your-api-key",
+  "GEMINI_MODEL": "gemini-2.5-flash-lite"
+}
+```
+
+**重要**: `ENVIRONMENT`を`"production"`に設定すると、デバッグエンドポイント（`/debug/d1`, `/debug/kv`, `/trigger-sync`）が無効化されます。
+
+## 6. Gemini API Keyの設定（オプションだが推奨）
 
 Google AI Studioで取得したGemini API Keyを設定:
 
@@ -78,13 +92,13 @@ wrangler secret put GEMINI_API_KEY
 
 **注意**: APIキーを設定しない場合、コンテンツモデレーションはスキップされます。
 
-## 6. デプロイ
+## 7. デプロイ
 
 ```bash
 npm run deploy
 ```
 
-## 7. 動作確認
+## 8. 動作確認
 
 デプロイ後、表示されるWorkerのURLにアクセスして動作確認:
 
