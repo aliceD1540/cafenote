@@ -22,20 +22,24 @@ export class GetRooms extends OpenAPIRoute {
 		const COMMENT_CACHE = env.COMMENT_CACHE;
 
 		try {
-			// Try to get from KV cache first
+			// Always include Default room
+			let rooms = ["Default"];
+			
+			// Try to get from KV cache
 			const cachedRooms = await COMMENT_CACHE.get("room_list");
 
 			if (cachedRooms) {
-				const rooms = JSON.parse(cachedRooms);
-				return c.json(rooms);
+				const cachedList = JSON.parse(cachedRooms) as string[];
+				// Add other rooms (excluding Default if it's already in the cache)
+				const otherRooms = cachedList.filter(r => r !== "Default");
+				rooms = [...rooms, ...otherRooms];
 			}
 
-			// If cache miss, return empty array
-			// Cache will be populated by the next cron job
-			return c.json([]);
+			return c.json(rooms);
 		} catch (error) {
 			console.error("Error fetching rooms:", error);
-			return c.json([], 500);
+			// Even on error, return Default room
+			return c.json(["Default"]);
 		}
 	}
 }
