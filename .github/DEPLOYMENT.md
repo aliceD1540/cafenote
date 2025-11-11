@@ -53,13 +53,20 @@ Google AI StudioのGemini API Keyを`GEMINI_API_KEY`として登録
 
 ## デプロイ
 
-masterブランチにpushすると自動的にデプロイされます：
+releaseブランチにpushすると自動的にデプロイされます：
 
 ```bash
-git push origin master
+git push origin release
 ```
 
 または、GitHub ActionsのUIから手動実行も可能です。
+
+## ブランチ戦略
+
+- **master**: 開発ブランチ（自動デプロイなし）
+- **release**: 本番リリース用ブランチ（自動デプロイ）
+
+masterからreleaseにマージすることで本番デプロイを実行します。
 
 ## ローカル開発
 

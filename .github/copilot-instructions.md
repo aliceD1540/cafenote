@@ -52,3 +52,9 @@ CafeNoteは、Cloudflare Workers + D1 + KV + Pagesで構築された匿名掲示
 - `feature/#1-room-list`
 - `fix/#2-qr-code-display`
 - `docs/#3-update-readme`
+
+## デプロイ戦略
+- **master**: 開発ブランチ（自動デプロイなし）
+- **release**: 本番リリース用ブランチ（自動デプロイ）
+
+masterからreleaseにマージすることで本番環境への自動デプロイが実行されます。
