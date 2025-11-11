@@ -156,12 +156,16 @@ async function syncCacheFromDB(env: Env) {
 		const DB = env.DB;
 		const COMMENT_CACHE = env.COMMENT_CACHE;
 
+		// Get rooms with comments in the last hour
+		const oneHourAgo = Math.floor(Date.now() / 1000) - 3600;
 		const roomsResult = await DB.prepare(
-			"SELECT DISTINCT room_id FROM comments"
-		).all();
+			"SELECT DISTINCT room_id FROM comments WHERE created_at > ?"
+		)
+			.bind(oneHourAgo)
+			.all();
 
 		const rooms = roomsResult.results as { room_id: string }[];
-		console.log(`[CRON] Found ${rooms.length} rooms to sync`);
+		console.log(`[CRON] Found ${rooms.length} active rooms (with comments in last hour)`);
 
 		// Cache room list
 		const roomList = rooms.map(r => r.room_id);
