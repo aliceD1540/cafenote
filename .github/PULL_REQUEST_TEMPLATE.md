@@ -12,6 +12,3 @@
 
 ## 備考
 <!-- その他、レビュアーに伝えたいことがあれば記述してください -->
-
----
-*This pull request was created with GitHub Copilot.*
