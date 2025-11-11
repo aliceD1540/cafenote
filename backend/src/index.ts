@@ -166,7 +166,7 @@ async function syncCacheFromDB(env: Env) {
 		// Cache room list
 		const roomList = rooms.map(r => r.room_id);
 		await COMMENT_CACHE.put("room_list", JSON.stringify(roomList), {
-			expirationTtl: 300,
+			expirationTtl: 3600, // 1時間
 		});
 		console.log(`[CRON] Room list cached: ${roomList.join(', ')}`);
 
@@ -181,7 +181,7 @@ async function syncCacheFromDB(env: Env) {
 			const cacheKey = `comment_cache:${room.room_id}`;
 
 			await COMMENT_CACHE.put(cacheKey, JSON.stringify(comments), {
-				expirationTtl: 300,
+				expirationTtl: 3600, // 1時間
 			});
 			console.log(`[CRON] Cached ${comments.length} comments for room: ${room.room_id}`);
 		}
