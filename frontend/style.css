@@ -1,0 +1,381 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica", Arial, sans-serif;
+  background-color: #ffffff;
+  padding: 0;
+  margin: 0;
+}
+
+.container {
+  width: 590px;
+  margin: 20px auto;
+  background: #fff;
+  border: 1px solid #000;
+  position: relative;
+  padding: 0;
+}
+
+/* Index page specific */
+.container.index-page {
+  height: 360px;
+}
+
+/* Help page specific */
+.container.help-page {
+  padding: 20px;
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .container {
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .container.index-page {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  gap: 10px;
+  border-bottom: 1px solid #000;
+}
+
+/* Help page header */
+.header.help-header {
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+  }
+}
+
+.input-wrapper {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .input-wrapper {
+    width: 100%;
+  }
+}
+
+#message {
+  width: 140px;
+  height: 20px;
+  padding: 2px 5px;
+  border: 1px solid #000;
+  font-size: 12px;
+  font-family: "Helvetica", Arial, sans-serif;
+  resize: none;
+}
+
+@media (max-width: 640px) {
+  #message {
+    flex: 1;
+    width: auto;
+    font-size: 16px;
+    height: 32px;
+  }
+}
+
+#message:focus {
+  outline: 1px solid #000;
+}
+
+#submitBtn {
+  width: 50px;
+  height: 20px;
+  padding: 0;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: "Helvetica", Arial, sans-serif;
+}
+
+@media (max-width: 640px) {
+  #submitBtn {
+    width: 70px;
+    height: 32px;
+    font-size: 14px;
+  }
+}
+
+#submitBtn:hover {
+  background-color: #f0f0f0;
+}
+
+#submitBtn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.note-section {
+  font-size: 12px;
+  color: #000;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.note-section a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.note-section a:hover {
+  color: #0052a3;
+}
+
+.qr-wrapper {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+@media (max-width: 640px) {
+  .qr-wrapper {
+    display: none;
+  }
+}
+
+.qr-wrapper #qrcode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.qr-wrapper img,
+.qr-wrapper canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto !important;
+  height: auto !important;
+}
+
+.qr-text {
+  font-size: 10px;
+  text-align: center;
+}
+
+#comments {
+  height: 260px;
+  padding: 7px 2px;
+  margin: 0 20px;
+  border: 1px solid #000;
+  overflow-y: auto;
+  font-size: 12px;
+  line-height: 1.5;
+  background-color: #fff;
+}
+
+@media (max-width: 640px) {
+  #comments {
+    height: auto;
+    flex: 1;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    font-size: 14px;
+    padding: 10px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.comment {
+  margin-bottom: 5px;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.comment.color-0 { background-color: #e3f2fd; }
+.comment.color-1 { background-color: #f3e5f5; }
+.comment.color-2 { background-color: #e8f5e9; }
+.comment.color-3 { background-color: #fff3e0; }
+.comment.color-4 { background-color: #fce4ec; }
+.comment.color-5 { background-color: #e0f2f1; }
+.comment.color-6 { background-color: #f1f8e9; }
+.comment.color-7 { background-color: #ede7f6; }
+
+.comment-text {
+  display: inline;
+}
+
+.comment-text.hidden-content {
+  color: #999;
+  cursor: pointer;
+  text-decoration: underline;
+  user-select: none;
+}
+
+.comment-text.hidden-content:hover {
+  color: #666;
+}
+
+.comment-time {
+  display: inline;
+  color: #666;
+}
+
+.no-comments {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.message-overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border: 2px solid #000;
+  padding: 20px;
+  min-width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: none;
+  text-align: center;
+}
+
+.message-overlay.error {
+  border-color: #c62828;
+  color: #c62828;
+}
+
+.message-overlay.success {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.message-overlay.warning {
+  border-color: #856404;
+  color: #856404;
+}
+
+/* Help page specific styles */
+h1 {
+  font-size: 24px;
+  margin: 0 0 10px 0;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 20px 0 10px 0;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 5px;
+}
+
+h3 {
+  font-size: 16px;
+  margin: 15px 0 8px 0;
+}
+
+p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+ul {
+  font-size: 14px;
+  line-height: 1.8;
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+li {
+  margin: 5px 0;
+}
+
+.note {
+  background-color: #f0f0f0;
+  border-left: 4px solid #666;
+  padding: 10px;
+  margin: 15px 0;
+  font-size: 13px;
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #000;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  background-color: #f0f0f0;
+}
+
+code {
+  background-color: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.copyright {
+  text-align: center;
+  font-size: 11px;
+  color: #888;
+  margin-top: 20px;
+  padding: 10px;
+}
+
+.copyright a {
+  color: #888;
+  text-decoration: none;
+}
+
+.copyright a:hover {
+  color: #555;
+  text-decoration: underline;
+}

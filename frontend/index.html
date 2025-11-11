@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CafeNote</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="qrcode.js"></script>
+  </head>
+  <body>
+    <div class="container index-page">
+      <div class="header">
+        <div class="input-wrapper">
+          <input type="text" id="message" maxlength="100" placeholder="コメント入力" />
+          <button type="button" id="submitBtn">投稿</button>
+        </div>
+        <div class="note-section">
+          投稿は1分に1回までです<br />
+          コメントは5分おきに更新されます<br />
+          <a href="#" id="helpLink">使い方</a>
+        </div>
+        <div class="qr-wrapper">
+          <div id="qrcode"></div>
+        </div>
+      </div>
+
+      <div id="comments">
+        <div class="loading">読み込み中...</div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <a href="https://project-grimoire.dev/" target="_blank" rel="noopener noreferrer"
+        >© Project Grimoire</a
+      >
+    </div>
+
+    <div class="message-overlay" id="messageOverlay"></div>
+    <div class="message-overlay error" id="roomIdError" style="display: none">
+      room_idは30文字以内で指定してください
+    </div>
+
+    <script>
+      const API_URL = 'http://localhost:8787';
+
+      function getRoomIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const roomId = params.get('room_id') || 'AAA';
+        console.log('room_id:', roomId);
+
+        // room_idの文字数チェック
+        if (roomId.length > 30) {
+          document.getElementById('roomIdError').style.display = 'block';
+          document.querySelector('.container').style.display = 'none';
+          return null;
+        }
+
+        return roomId;
+      }
+
+      const ROOM_ID = getRoomIdFromUrl();
+
+      if (ROOM_ID === null) {
+        // room_idが無効な場合は処理を中断
+        throw new Error('Invalid room_id');
+      }
+
+      // QRコード用のURLを生成（必ずroom_idパラメータを含める）
+      const baseUrl = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+      const qrUrl = `${baseUrl}?room_id=${ROOM_ID}`;
+
+      console.log('ROOM_ID:', ROOM_ID);
+      console.log('QR URL:', qrUrl);
+
+      new QRCode(document.getElementById('qrcode'), {
+        text: qrUrl,
+        width: 52,
+        height: 52,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L,
+      });
+
+      const messageInput = document.getElementById('message');
+      const submitBtn = document.getElementById('submitBtn');
+      const messageOverlay = document.getElementById('messageOverlay');
+      const commentsContainer = document.getElementById('comments');
+
+      function formatDate(timestamp) {
+        const date = new Date(timestamp);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function renderComments(comments) {
+        if (!comments || comments.length === 0) {
+          commentsContainer.innerHTML = '<div class="no-comments">まだコメントがありません</div>';
+          return;
+        }
+
+        commentsContainer.innerHTML = comments
+          .map((comment, index) => {
+            const isHidden = comment.is_hidden === 1;
+            const displayText = isHidden ? '*** (クリックで表示)' : escapeHtml(comment.message);
+            const textClass = isHidden ? 'comment-text hidden-content' : 'comment-text';
+            const dataAttrs = isHidden
+              ? `data-original-message="${escapeHtml(comment.message)}" data-is-revealed="false"`
+              : '';
+            const colorClass = `color-${index % 8}`;
+
+            return `<div class="comment ${colorClass}"><span class="${textClass}" ${dataAttrs}>${displayText}</span> - <span class="comment-time">(${formatDate(
+              comment.created_at
+            )})</span></div>`;
+          })
+          .join('');
+
+        // Add click event listeners to hidden content
+        document.querySelectorAll('.comment-text.hidden-content').forEach((element) => {
+          element.addEventListener('click', function () {
+            const originalMessage = this.getAttribute('data-original-message');
+            const isRevealed = this.getAttribute('data-is-revealed') === 'true';
+
+            if (isRevealed) {
+              // Hide it again
+              this.textContent = '*** (クリックで表示)';
+              this.setAttribute('data-is-revealed', 'false');
+            } else {
+              // Reveal the message
+              this.textContent = originalMessage;
+              this.setAttribute('data-is-revealed', 'true');
+            }
+          });
+        });
+      }
+
+      async function loadComments() {
+        try {
+          const response = await fetch(`${API_URL}/${ROOM_ID}`);
+          if (response.ok) {
+            const comments = await response.json();
+            renderComments(comments);
+          } else {
+            commentsContainer.innerHTML =
+              '<div class="no-comments">コメントの読み込みに失敗しました</div>';
+          }
+        } catch (error) {
+          console.error('Error loading comments:', error);
+          commentsContainer.innerHTML =
+            '<div class="no-comments">コメントの読み込みに失敗しました</div>';
+        }
+      }
+
+      function showMessage(message, type) {
+        messageOverlay.textContent = message;
+        messageOverlay.className = `message-overlay ${type}`;
+        messageOverlay.style.display = 'block';
+        setTimeout(() => {
+          messageOverlay.style.display = 'none';
+        }, 3000);
+      }
+
+      submitBtn.addEventListener('click', async function () {
+        const message = messageInput.value.trim();
+        if (message.length === 0) {
+          showMessage('メッセージを入力してください', 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = '...';
+
+        try {
+          const response = await fetch(`${API_URL}/${ROOM_ID}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            if (data.warning) {
+              showMessage(data.warning, 'warning');
+            } else {
+              showMessage('投稿しました', 'success');
+            }
+            messageInput.value = '';
+            await loadComments();
+          } else {
+            showMessage(data.error || '投稿に失敗しました', 'error');
+          }
+        } catch (error) {
+          console.error('Error posting comment:', error);
+          showMessage('投稿に失敗しました', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '投稿';
+        }
+      });
+
+      messageInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitBtn.click();
+        }
+      });
+
+      loadComments();
+      setInterval(loadComments, 300000);
+
+      // ヘルプページへのリンク（room_idを保持）
+      const helpLink = document.getElementById('helpLink');
+      helpLink.href = `help.html?room_id=${ROOM_ID}`;
+    </script>
+  </body>
+</html>

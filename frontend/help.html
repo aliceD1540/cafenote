@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ヘルプ - CafeNote</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container help-page">
+      <div class="header help-header">
+        <h1>CafeNote - ヘルプ</h1>
+      </div>
+
+      <h2>CafeNoteとは</h2>
+      <p>
+        CafeNoteは、部屋ごとに匿名でコメントを投稿できるシンプルな掲示板システムです。
+        来訪者との交流や、イベントでのメッセージ収集などにご活用いただけます。
+      </p>
+
+      <h2>基本的な使い方</h2>
+
+      <h3>1. 部屋の指定</h3>
+      <p>
+        URLのクエリパラメータで部屋IDを指定できます。<br />
+        日本語指定もできますが、QRコードが複雑化してしまうため英数字推奨。<br />
+        例：<code>?room_id=myroom</code>
+      </p>
+      <ul>
+        <li>部屋IDは30文字以内で指定してください</li>
+        <li>指定しない場合は、デフォルトの部屋（AAA）になります</li>
+      </ul>
+
+      <h3>2. コメントの投稿</h3>
+      <ul>
+        <li>100文字以内でコメントを入力できます</li>
+        <li>投稿は同一IPアドレスから1時間に1回までです</li>
+        <li>不適切な表現や個人情報は自動でチェックされます</li>
+      </ul>
+
+      <h3>3. QRコード</h3>
+      <p>ページ内に表示されているQRコードをスキャンすると、同じ部屋に直接アクセスできます。</p>
+
+      <h2>コンテンツモデレーション</h2>
+      <p>投稿内容は自動的にチェックされ、以下のように処理されます：</p>
+      <ul>
+        <li><strong>通常の投稿：</strong>そのまま表示されます</li>
+        <li><strong>軽度の不適切表現：</strong>「***」で伏せられ、クリックで表示できます</li>
+        <li><strong>重度の不適切表現・個人情報：</strong>投稿が拒否されます</li>
+      </ul>
+
+      <h2>制限事項</h2>
+      <ul>
+        <li>投稿頻度：1時間に1回まで（IPアドレスごと）</li>
+        <li>コメント文字数：100文字まで</li>
+        <li>保存件数：各部屋100件まで（古いものから削除されます）</li>
+        <li>更新頻度：コメント一覧は5分ごとに自動更新されます</li>
+      </ul>
+
+      <div class="note">
+        <strong>注意：</strong
+        >このシステムは匿名での投稿を前提としていますが、不適切な使用や違法行為は禁止されています。
+        節度を守ってご利用ください。
+      </div>
+
+      <p style="font-size: 11px; color: #888; margin-top: 30px">
+        ※「QRコード」は株式会社デンソーウェーブの登録商標です。
+      </p>
+
+      <a href="javascript:history.back()" class="back-link">← 戻る</a>
+
+      <div class="copyright">
+        <a href="https://project-grimoire.dev/" target="_blank" rel="noopener noreferrer"
+          >© Project Grimoire</a
+        >
+      </div>
+    </div>
+
+    <script>
+      // URLパラメータがあれば保持して戻る
+      const params = new URLSearchParams(window.location.search);
+      const roomId = params.get('room_id');
+      if (roomId) {
+        const backLink = document.querySelector('.back-link');
+        backLink.href = `index.html?room_id=${roomId}`;
+      }
+    </script>
+  </body>
+</html>
