@@ -38,7 +38,17 @@ CafeNoteは、Cloudflare Workers + D1 + KV + Pagesで構築された匿名掲示
 
 ## 開発フロー
 1. issueを確認
-2. feature/xxx ブランチを作成
+2. feature/#<issue_number>-xxx ブランチを作成（例: feature/#1-room-list）
 3. 実装・コミット
 4. プッシュしてPR作成
 5. `Fixes #<issue_number>` でissueをリンク
+
+## ブランチ命名規則
+- feature: 新機能追加 → `feature/#<issue_number>-<short-description>`
+- fix: バグ修正 → `fix/#<issue_number>-<short-description>`
+- docs: ドキュメント修正 → `docs/#<issue_number>-<short-description>`
+
+例:
+- `feature/#1-room-list`
+- `fix/#2-qr-code-display`
+- `docs/#3-update-readme`
