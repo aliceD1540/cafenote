@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { GetComments } from "./endpoints/getComments";
 import { PostComment } from "./endpoints/postComment";
+import { GetRooms } from "./endpoints/getRooms";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -16,6 +17,7 @@ const openapi = fromHono(app, {
 	docs_url: "/",
 });
 
+openapi.get("/rooms", GetRooms);
 openapi.get("/:roomId", GetComments);
 openapi.post("/:roomId", PostComment);
 
@@ -36,6 +38,12 @@ async function syncCacheFromDB(env: Env) {
 		).all();
 
 		const rooms = roomsResult.results as { room_id: string }[];
+
+		// Cache room list
+		const roomList = rooms.map(r => r.room_id);
+		await COMMENT_CACHE.put("room_list", JSON.stringify(roomList), {
+			expirationTtl: 300,
+		});
 
 		for (const room of rooms) {
 			const result = await DB.prepare(
