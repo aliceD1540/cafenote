@@ -18,14 +18,8 @@ const openapi = fromHono(app, {
 	docs_url: "/",
 });
 
-openapi.get("/rooms", GetRooms);
-openapi.get("/:roomId", GetComments);
-openapi.post("/:roomId", PostComment);
-
-// Debug endpoints
+// Debug and development endpoints (must be before /:roomId)
 openapi.get("/debug/d1", DebugD1);
-
-// Development endpoints for testing
 app.get("/trigger-sync", async (c) => {
 	const env = c.env as Env;
 	console.log("[DEBUG] Manual sync triggered");
@@ -102,6 +96,11 @@ app.get("/debug/kv", async (c) => {
 		}, 500);
 	}
 });
+
+// API endpoints (/:roomId must be last to avoid conflicts)
+openapi.get("/rooms", GetRooms);
+openapi.get("/:roomId", GetComments);
+openapi.post("/:roomId", PostComment);
 
 export default {
 	fetch: app.fetch,
