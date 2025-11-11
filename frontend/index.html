@@ -17,7 +17,7 @@
         <div class="note-section">
           投稿は1分に1回までです<br />
           コメントは5分おきに更新されます<br />
-          <a href="#" id="helpLink">使い方</a>
+          <a href="#" id="helpLink">使い方</a> | <a href="rooms.html">部屋一覧</a>
         </div>
         <div class="qr-wrapper">
           <div id="qrcode"></div>
@@ -45,7 +45,7 @@
 
       function getRoomIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
-        const roomId = params.get('room_id') || 'AAA';
+        const roomId = params.get('room_id') || 'Default';
         console.log('room_id:', roomId);
 
         // room_idの文字数チェック
