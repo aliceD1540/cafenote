@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { GetComments } from "./endpoints/getComments";
 import { PostComment } from "./endpoints/postComment";
 import { GetRooms } from "./endpoints/getRooms";
+import { DebugD1 } from "./endpoints/debugD1";
 
 const app = new Hono<{ Bindings: Env }>();
 
@@ -21,42 +22,85 @@ openapi.get("/rooms", GetRooms);
 openapi.get("/:roomId", GetComments);
 openapi.post("/:roomId", PostComment);
 
+// Debug endpoints
+openapi.get("/debug/d1", DebugD1);
+
 // Development endpoints for testing
 app.get("/trigger-sync", async (c) => {
 	const env = c.env as Env;
 	console.log("[DEBUG] Manual sync triggered");
-	await syncCacheFromDB(env);
-	return c.json({ message: "Cache sync triggered manually", timestamp: new Date().toISOString() });
+	
+	try {
+		// Check if bindings are available
+		if (!env.DB) {
+			console.error("[DEBUG] DB binding not found");
+			return c.json({ error: "DB binding not configured" }, 500);
+		}
+		if (!env.COMMENT_CACHE) {
+			console.error("[DEBUG] COMMENT_CACHE binding not found");
+			return c.json({ error: "COMMENT_CACHE binding not configured" }, 500);
+		}
+		
+		await syncCacheFromDB(env);
+		return c.json({ 
+			message: "Cache sync triggered manually", 
+			timestamp: new Date().toISOString() 
+		});
+	} catch (error: any) {
+		console.error("[DEBUG] Error during manual sync:", error);
+		return c.json({ 
+			error: "Sync failed", 
+			details: error.message,
+			timestamp: new Date().toISOString()
+		}, 500);
+	}
 });
 
 app.get("/debug/kv", async (c) => {
 	const env = c.env as Env;
-	const COMMENT_CACHE = env.COMMENT_CACHE;
 	
-	const roomList = await COMMENT_CACHE.get("room_list");
-	const roomListParsed = roomList ? JSON.parse(roomList) : null;
-	
-	const cacheInfo: any = {
-		room_list: roomListParsed,
-		cached_rooms: {}
-	};
-	
-	// Get cache info for each room
-	if (roomListParsed && Array.isArray(roomListParsed)) {
-		for (const roomId of roomListParsed) {
-			const cacheKey = `comment_cache:${roomId}`;
-			const cached = await COMMENT_CACHE.get(cacheKey);
-			if (cached) {
-				const comments = JSON.parse(cached);
-				cacheInfo.cached_rooms[roomId] = {
-					comment_count: comments.length,
-					last_comment: comments[0] || null
-				};
+	try {
+		if (!env.COMMENT_CACHE) {
+			return c.json({ error: "COMMENT_CACHE binding not configured" }, 500);
+		}
+		
+		const COMMENT_CACHE = env.COMMENT_CACHE;
+		
+		const roomList = await COMMENT_CACHE.get("room_list");
+		console.log("[DEBUG] Raw room_list from KV:", roomList);
+		
+		const roomListParsed = roomList ? JSON.parse(roomList) : null;
+		
+		const cacheInfo: any = {
+			room_list: roomListParsed,
+			cached_rooms: {}
+		};
+		
+		// Get cache info for each room
+		if (roomListParsed && Array.isArray(roomListParsed)) {
+			for (const roomId of roomListParsed) {
+				const cacheKey = `comment_cache:${roomId}`;
+				const cached = await COMMENT_CACHE.get(cacheKey);
+				if (cached) {
+					const comments = JSON.parse(cached);
+					cacheInfo.cached_rooms[roomId] = {
+						comment_count: comments.length,
+						last_comment: comments[0] || null
+					};
+				} else {
+					cacheInfo.cached_rooms[roomId] = null;
+				}
 			}
 		}
+		
+		return c.json(cacheInfo);
+	} catch (error: any) {
+		console.error("[DEBUG] Error reading KV:", error);
+		return c.json({ 
+			error: "Failed to read KV", 
+			details: error.message 
+		}, 500);
 	}
-	
-	return c.json(cacheInfo);
 });
 
 export default {

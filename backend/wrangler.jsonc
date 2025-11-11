@@ -13,8 +13,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "guestbook-db",
-      "database_id": "YOUR_DATABASE_ID"
+      "database_name": "cafenote-db",
+      "database_id": "7e97af03-1597-4688-9889-71aea1e3dac6"
     }
   ],
   "kv_namespaces": [
