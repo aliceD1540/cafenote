@@ -45,7 +45,7 @@
 
       function getRoomIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
-        const roomId = params.get('room_id') || 'AAA';
+        const roomId = params.get('room_id') || 'Default';
         console.log('room_id:', roomId);
 
         // room_idの文字数チェック
