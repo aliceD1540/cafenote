@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ゲストノート</title>
+    <script src="qrcode.js"></script>
     <style>
       * {
         box-sizing: border-box;
@@ -24,6 +25,14 @@
         position: relative;
         padding: 0;
       }
+      @media (max-width: 640px) {
+        .container {
+          width: calc(100% - 20px);
+          height: auto;
+          min-height: 360px;
+          margin: 10px;
+        }
+      }
       .header {
         display: flex;
         align-items: center;
@@ -31,10 +40,22 @@
         gap: 10px;
         border-bottom: 1px solid #000;
       }
+      @media (max-width: 640px) {
+        .header {
+          flex-direction: column;
+          padding: 10px;
+          gap: 8px;
+        }
+      }
       .input-wrapper {
         display: flex;
         gap: 10px;
         flex: 1;
+      }
+      @media (max-width: 640px) {
+        .input-wrapper {
+          width: 100%;
+        }
       }
       #message {
         width: 140px;
@@ -44,6 +65,14 @@
         font-size: 12px;
         font-family: "Helvetica", Arial, sans-serif;
         resize: none;
+      }
+      @media (max-width: 640px) {
+        #message {
+          flex: 1;
+          width: auto;
+          font-size: 16px;
+          height: 32px;
+        }
       }
       #message:focus {
         outline: 1px solid #000;
@@ -58,6 +87,13 @@
         cursor: pointer;
         font-size: 12px;
         font-family: "Helvetica", Arial, sans-serif;
+      }
+      @media (max-width: 640px) {
+        #submitBtn {
+          width: 70px;
+          height: 32px;
+          font-size: 14px;
+        }
       }
       #submitBtn:hover {
         background-color: #f0f0f0;
@@ -82,7 +118,8 @@
         flex-shrink: 0;
         padding: 4px;
       }
-      .qr-wrapper img {
+      .qr-wrapper img,
+      .qr-wrapper canvas {
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -100,6 +137,14 @@
         font-size: 12px;
         line-height: 1.5;
         background-color: #fff;
+      }
+      @media (max-width: 640px) {
+        #comments {
+          height: 400px;
+          margin: 0 10px;
+          font-size: 14px;
+          padding: 10px 5px;
+        }
       }
       .comment {
         margin-bottom: 5px;
@@ -189,9 +234,7 @@
           コメントは5分おきに更新されます
         </div>
         <div class="qr-wrapper">
-          <div id="qrDisplay">
-            <img id="qrCode" alt="QR" />
-          </div>
+          <div id="qrcode"></div>
         </div>
       </div>
 
@@ -212,9 +255,15 @@
 
       const ROOM_ID = getRoomIdFromUrl();
       const currentUrl = window.location.href;
-      const qrCode = document.getElementById('qrCode');
       
-      qrCode.src = `https://api.qrserver.com/v1/create-qr-code/?size=52x52&data=${encodeURIComponent(currentUrl)}`;
+      new QRCode(document.getElementById('qrcode'), {
+        text: currentUrl,
+        width: 52,
+        height: 52,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.L
+      });
 
       const messageInput = document.getElementById('message');
       const submitBtn = document.getElementById('submitBtn');

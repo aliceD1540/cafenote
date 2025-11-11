@@ -155,6 +155,10 @@ Gemini APIを使用した3段階判定:
 
 GETで取得したJSONをもとにコメント一覧を表示する。
 
+## 使用ライブラリ
+
+- [QRCode.js](https://davidshimjs.github.io/qrcodejs/) - QRコード生成ライブラリ (MIT License)
+
 ## ライセンス
 
 このプロジェクトはMITライセンスの下で公開されています。
