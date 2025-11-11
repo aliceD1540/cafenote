@@ -1,21 +1,21 @@
-# Frontend (Cloudflare Pages)
+# CafeNote Frontend (Cloudflare Pages)
 
-Cloudflare Pagesにデプロイ可能な静的HTMLゲストノートフロントエンド
+Cloudflare Pagesにデプロイ可能な静的HTMLフロントエンド
 
 ## 機能
 
 - 部屋ごとのコメント表示・投稿
 - QRコード表示（URLの共有を容易に）
-- リアルタイム文字数カウント
-- 30秒ごとの自動更新
-- レスポンシブデザイン
+- レスポンシブデザイン（PC・スマホ対応）
+- コメントの色分け表示
 - エラー・成功・警告メッセージの表示
+- ヘルプページ
 
 ## セットアップ
 
 ### 1. APIのURLを設定
 
-`sample.html`を開き、`API_URL`を実際のCloudflare WorkersのURLに変更してください：
+`index.html`を開き、`API_URL`を実際のCloudflare WorkersのURLに変更してください：
 
 ```javascript
 const API_URL = 'https://guestbook-backend.your-subdomain.workers.dev';

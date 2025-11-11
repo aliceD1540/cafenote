@@ -1,6 +1,6 @@
-# Guestbook Backend (Cloudflare Workers)
+# CafeNote Backend (Cloudflare Workers)
 
-Cloudflare Workers + D1 + KVを使用したゲストブックバックエンドシステム
+Cloudflare Workers + D1 + KVを使用したCafeNoteバックエンドシステム
 
 ## 機能
 

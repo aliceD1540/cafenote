@@ -1,4 +1,4 @@
-# デプロイ手順
+# CafeNote デプロイ手順
 
 ## 前提条件
 
@@ -15,7 +15,7 @@ wrangler login
 
 ```bash
 cd backend
-wrangler d1 create guestbook-db
+wrangler d1 create cafenote-db
 ```
 
 出力例:
@@ -24,7 +24,7 @@ wrangler d1 create guestbook-db
 
 [[d1_databases]]
 binding = "DB"
-database_name = "guestbook-db"
+database_name = "cafenote-db"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
@@ -33,7 +33,7 @@ database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ## 3. データベーススキーマの適用
 
 ```bash
-wrangler d1 execute guestbook-db --file=./schema.sql
+wrangler d1 execute cafenote-db --file=./schema.sql
 ```
 
 ## 4. KVネームスペースの作成
@@ -93,7 +93,7 @@ npm run deploy
 curl https://guestbook-backend.your-subdomain.workers.dev/test-room
 
 # コメント投稿
-curl -X POST https://guestbook-backend.your-subdomain.workers.dev/test-room \
+curl -X POST https://cafenote-backend.your-subdomain.workers.dev/test-room \
   -H "Content-Type: application/json" \
   -d '{"message":"テストメッセージ"}'
 ```
