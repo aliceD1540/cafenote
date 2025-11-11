@@ -28,7 +28,7 @@
     }
   ],
   "vars": {
-    "GEMINI_API_KEY": "",
+    "GEMINI_API_KEY": "AIzaSyBYjdX-1-Ntj0Wzy25B_NJmO5_R6snrrW4",
     "GEMINI_MODEL": "gemini-2.5-flash-lite"
   },
   "triggers": {
